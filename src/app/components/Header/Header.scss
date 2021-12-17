@@ -1,0 +1,14 @@
+@use "../../assets/style/variables" as v;
+
+#header {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 5% 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  border-bottom: 1px solid v.$header-primary;
+  color: v.$header-primary
+}
