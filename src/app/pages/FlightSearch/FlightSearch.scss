@@ -4,4 +4,41 @@
   background-color: v.$color-primary;
   width: 100%;
   height: 100%;
+
+  .content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .search-bar {
+    background-color: v.$color-secondary;
+    display: flex;
+
+    input {
+      width: 165px;
+    }
+  }
+
+  .input-field {
+    position: relative;
+
+    .fa-icon {
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+
+  .search-button {
+    background-color: v.$ui-red;
+    height: 100%;
+    width: 60px;
+  }
+}
+
+#popover {
+  min-width: 320px;
 }

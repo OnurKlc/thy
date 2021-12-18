@@ -1,3 +1,9 @@
+@use "variables" as v;
+
 .font-weight-bold {
   font-weight: bold;
+}
+
+.color-ui-white {
+  color: v.$ui-white
 }
