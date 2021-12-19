@@ -9,6 +9,14 @@
   left: 0;
   right: 0;
   background-color: transparent;
+}
+
+#header.dark {
+  border-bottom: 1px solid v.$color-primary;
+  color: v.$color-primary;
+}
+
+#header.light {
   border-bottom: 1px solid v.$ui-white;
-  color: v.$ui-white
+  color: v.$ui-white;
 }

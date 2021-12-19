@@ -1,0 +1,35 @@
+@use "src/app/assets/style/variables" as v;
+
+#flightList {
+  width: 100%;
+  height: 100%;
+
+  .content {
+    padding-top: 120px;
+    max-width: 900px;
+  }
+
+  .flight-text {
+    background-color: v.$ui-red;
+    padding: 5px 0;
+    color: v.$ui-white;
+    width: 80px;
+    text-align: center;
+  }
+
+  .flight-list {
+    width: 100%;
+    background-color: v.$ui-white;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,.05);
+  }
+
+  .flight-list-header {
+    background-color: v.$color-primary;
+    width: 100%;
+    height: 50px;
+  }
+
+  .flight-list-items {
+
+  }
+}

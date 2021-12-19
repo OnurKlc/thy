@@ -4,6 +4,14 @@
   font-weight: bold;
 }
 
+.font-sm {
+  font-size: 0.75rem;
+}
+
 .color-ui-white {
   color: v.$ui-white
+}
+
+.flex-grow-2 {
+  flex-grow: 2;
 }

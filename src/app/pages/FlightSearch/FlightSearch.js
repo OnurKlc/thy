@@ -1,20 +1,70 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faPlaneDeparture, faPlaneArrival, faMale, faCalendarAlt, faChevronRight} from '@fortawesome/free-solid-svg-icons'
-import {Badge, Button, OverlayTrigger, Popover} from "react-bootstrap";
+import {
+  faPlaneDeparture,
+  faPlaneArrival,
+  faMale,
+  faCalendarAlt,
+  faChevronRight
+} from '@fortawesome/free-solid-svg-icons'
+import {Badge, Button, OverlayTrigger, Popover, Toast} from "react-bootstrap";
 import Layout from "../../components/Layout/Layout";
+import jsonData from "../../core/data/flights.json"
 import "./FlightSearch.scss";
+import {FLIGHT_CLASS, FLIGHT_DATA, PASSENGER_COUNT} from "../../core/constants";
 
 export function FlightSearch() {
+  let navigate = useNavigate();
   const [passengerCount, setPassengerCount] = useState(1)
+  const [flightClass, setFlightClass] = useState("")
+  const [showToaster, setShowToaster] = useState(false)
+  const [formData, setFormData] = useState({
+    destination: '',
+    origin: ''
+  })
 
   const onPassengerCountChange = (value) => {
     const _passengerCount = passengerCount + value
-    if (_passengerCount === 0 || _passengerCount === 6) {
+    if (_passengerCount === 0 || _passengerCount === 7) {
       return
     }
     setPassengerCount(_passengerCount)
   }
+
+  const onDestinationChange = (e) => {
+    setFormData({...Object.assign(formData, {destination: e.target.value})})
+  }
+
+  const onOriginChange = (e) => {
+    setFormData({...Object.assign(formData, {origin: e.target.value})})
+  }
+
+  const onSearchClick = () => {
+    if (!formData.destination || !formData.origin) {
+      return
+    }
+    let proceed = false;
+    const data = JSON.parse(JSON.stringify(jsonData))
+    data.flights.forEach(item => {
+      const destinationCheck = item.destinationAirport.city.name.toLowerCase() === formData.destination.toLocaleLowerCase("tr-TR")
+      const originCheck = item.originAirport.city.name.toLowerCase() === formData.origin.toLocaleLowerCase("tr-TR")
+      if (destinationCheck && originCheck) {
+        proceed = true
+      }
+    })
+    if (proceed) {
+      localStorage.setItem(FLIGHT_CLASS, flightClass)
+      localStorage.setItem(PASSENGER_COUNT, passengerCount)
+      navigate("/list-flights");
+    } else {
+      setShowToaster(true)
+    }
+  }
+
+  useEffect(() => {
+    localStorage.setItem(FLIGHT_DATA, JSON.stringify(jsonData))
+  }, [])
 
   return (
     <Layout>
@@ -23,12 +73,12 @@ export function FlightSearch() {
           <h3 className="color-ui-white text-center">Merhaba <br/> Nereyi keşfetmek istersiniz?</h3>
           <div className="search-bar p-5">
             <div className="input-field me-4">
-              <input type="text" className="form-control ps-5" placeholder="Nereden"/>
+              <input type="text" className="form-control ps-5" placeholder="Nereden" onChange={onOriginChange}/>
               <FontAwesomeIcon icon={faPlaneDeparture} className="fa-icon"/>
             </div>
 
             <div className="input-field me-4">
-              <input type="text" className="form-control ps-5" placeholder="Nereye"/>
+              <input type="text" className="form-control ps-5" placeholder="Nereye" onChange={onDestinationChange}/>
               <FontAwesomeIcon icon={faPlaneArrival} className="fa-icon"/>
             </div>
 
@@ -38,12 +88,13 @@ export function FlightSearch() {
               style={{width: "120px"}}
             >
               <div className="font-weight-bold color-ui-white">Tarih</div>
-              <FontAwesomeIcon icon={faCalendarAlt} />
+              <FontAwesomeIcon icon={faCalendarAlt}/>
             </Button>
 
             <OverlayTrigger
               trigger="click"
               placement="bottom"
+              rootClose={true}
               overlay={
                 <Popover id="popover">
                   <Popover.Body>
@@ -53,11 +104,11 @@ export function FlightSearch() {
 
                     <div className="form-group mb-4 d-flex justify-content-between">
 
-                      <input type="radio" className="form-check-input" id="radio1" name="optradio" value="economy"/>
+                      <input type="radio" onChange={e => setFlightClass(e.target.value)} className="form-check-input" id="radio1" name="optradio" value="economy"/>
                       Economy Class
                       <label className="form-check-label" htmlFor="radio1"/>
 
-                      <input type="radio" className="form-check-input" id="radio2" name="optradio" value="business"/>
+                      <input type="radio" onChange={e => setFlightClass(e.target.value)} className="form-check-input" id="radio2" name="optradio" value="business"/>
                       Business Class
                       <label className="form-check-label" htmlFor="radio2"/>
                     </div>
@@ -84,11 +135,20 @@ export function FlightSearch() {
               </Button>
             </OverlayTrigger>
 
-            <Button className="ms-4 search-button">
-              <FontAwesomeIcon icon={faChevronRight} />
+            <Button className="ms-4 search-button" onClick={onSearchClick}>
+              <FontAwesomeIcon icon={faChevronRight}/>
             </Button>
           </div>
         </div>
+        <Toast
+          onClose={() => setShowToaster(false)}
+          show={showToaster}
+          delay={3000}
+          autohide
+          className="position-absolute bottom-0"
+        >
+          <Toast.Body>Aradığınız kriterlerde uçuş bulunamadı.</Toast.Body>
+        </Toast>
       </div>
     </Layout>
   )
