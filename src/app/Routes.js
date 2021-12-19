@@ -11,7 +11,7 @@ export default function RouteContents() {
         <Route path="search-flights" element={<Pages.FlightSearch />} />
         <Route path="list-flights" element={<Pages.FlightList />} />
         <Route path="result" element={<Pages.Result />} />
-        <Route path="error" element={<Pages.ErrorPage />} />
+        <Route path="*" element={<Pages.ErrorPage />} />
       </Routes>
     </BrowserRouter>
   );
