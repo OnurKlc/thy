@@ -1,17 +1,16 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {Accordion, Button, Card, useAccordionButton} from "react-bootstrap";
+import React, {useEffect, useState} from "react"
+import {useNavigate} from "react-router-dom"
+import {Accordion, Button, Card, useAccordionButton} from "react-bootstrap"
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {orderBy} from "lodash"
 import {faChevronDown} from '@fortawesome/free-solid-svg-icons'
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import Layout from "../../components/Layout/Layout";
-import {FLIGHT_DATA, PASSENGER_COUNT} from "../../core/constants";
-import "./FlightList.scss";
+import {FLIGHT_DATA, PASSENGER_COUNT, TOTAL_PRICE} from "../../core/constants"
+import "./FlightList.scss"
 
-function AccordionCard({children, eventKey, withRightMargin}) {
-  const decoratedOnClick = useAccordionButton(eventKey, () =>
-    console.log('totally custom!'),
-  );
+function AccordionCard({children, eventKey}) {
+  const decoratedOnClick = useAccordionButton(eventKey, () => console.log('toggle accordion'));
 
   return (
     <div onClick={decoratedOnClick} className="w-100">
@@ -26,12 +25,32 @@ export function FlightList() {
   const [promotion, setPromotion] = useState(false)
   const [flightData, setFlightData] = useState()
 
+  const onDepartureSort = () => {
+    const _flighData = orderBy(flightData, ['departureDateTimeDisplay'], ['asc'])
+    setFlightData([..._flighData])
+  }
+
+  const onEconomySort = () => {
+    const _flighData = orderBy(flightData, ['fareCategories.ECONOMY.subcategories[0].price.amount'], ['asc'])
+    setFlightData([..._flighData])
+  }
+
+  const onFlightSelectClick = (flight) => {
+    console.log(flight)
+    if (flight.status === "AVAILABLE") {
+      navigate("/result?final=success")
+      localStorage.setItem(TOTAL_PRICE, flight.price.currency + " " + (flight.price.amount * passengerCount))
+    } else {
+      navigate("/result?final=error")
+    }
+  }
+
   useEffect(() => {
     const _passengerCount = localStorage.getItem(PASSENGER_COUNT)
     const _flightData = localStorage.getItem(FLIGHT_DATA)
     if (_passengerCount) {
       setPassengerCount(Number(_passengerCount))
-      setFlightData(JSON.parse(_flightData))
+      setFlightData(JSON.parse(_flightData).flights)
       console.log(JSON.parse(_flightData))
     } else {
       navigate("/search-flights")
@@ -56,11 +75,11 @@ export function FlightList() {
           <div className="flight-list mt-4">
             <div className="flight-list-header d-flex justify-content-end align-items-center">
               <span className="text-white me-4">Sıralama Kriteri</span>
-              <Button variant="outline-light me-4">Ekonomi Ücreti</Button>
-              <Button variant="outline-light me-4">Kalkış Saati</Button>
+              <Button variant="outline-light me-4" onClick={onEconomySort}>Ekonomi Ücreti</Button>
+              <Button variant="outline-light me-4" onClick={onDepartureSort}>Kalkış Saati</Button>
             </div>
             <div className="flight-list-items">
-              {flightData && flightData.flights.map(flight => (
+              {flightData && flightData.map(flight => (
                 <div className="d-flex p-2 align-items-start" key={flight.arrivalDateTimeDisplay}>
 
                   <div className="w-50 bg-white p-2 me-2 d-flex height-90">
@@ -105,6 +124,7 @@ export function FlightList() {
                           <div className="bg-white p-2 accordion-child-middle d-flex">
                             {flight.fareCategories.ECONOMY.subcategories.map((item, index) => (
                               <Card
+                                key={item.brandCode}
                                 className={"flex-grow-1 " + (index !== flight.fareCategories.BUSINESS.subcategories.length - 1 ? "me-2" : "")}>
                                 <Card.Header
                                   className="d-flex align-items-center justify-content-between font-weight-bold">
@@ -123,12 +143,12 @@ export function FlightList() {
                                 <Card.Body className="d-flex flex-column justify-content-between">
                                   <div>
                                     {item.rights.map(right => (
-                                      <div className="border-bottom pb-1">
+                                      <div className="border-bottom pb-1" key={right}>
                                         {right}
                                       </div>
                                     ))}
                                   </div>
-                                  <Button className="flight-select-button">Uçuşu Seç</Button>
+                                  <Button variant="danger" disabled={promotion && item.brandCode !== "ecoFly"} onClick={() => onFlightSelectClick(item)}>Uçuşu Seç</Button>
                                 </Card.Body>
                               </Card>
                             ))}
@@ -158,6 +178,7 @@ export function FlightList() {
                           <div className="bg-white p-2 accordion-child-last d-flex">
                             {flight.fareCategories.BUSINESS.subcategories.map((item, index) => (
                               <Card
+                                key={item.brandCode}
                                 className={"flex-grow-1 " + (index !== flight.fareCategories.BUSINESS.subcategories.length - 1 ? "me-2" : "")}>
                                 <Card.Header
                                   className="d-flex align-items-center justify-content-between font-weight-bold">
@@ -176,12 +197,12 @@ export function FlightList() {
                                 <Card.Body className="d-flex flex-column justify-content-between">
                                   <div>
                                     {item.rights.map(right => (
-                                      <div className="border-bottom pb-1">
+                                      <div className="border-bottom pb-1" key={right}>
                                         {right}
                                       </div>
                                     ))}
                                   </div>
-                                  <Button className="flight-select-button">Uçuşu Seç</Button>
+                                  <Button variant="danger" disabled={promotion && item.brandCode !== "ecoFly"} onClick={() => onFlightSelectClick(item)}>Uçuşu Seç</Button>
                                 </Card.Body>
                               </Card>
                             ))}
