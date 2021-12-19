@@ -148,7 +148,7 @@ export function FlightList() {
                                       </div>
                                     ))}
                                   </div>
-                                  <Button variant="danger" disabled={promotion && item.brandCode !== "ecoFly"} onClick={() => onFlightSelectClick(item)}>Uçuşu Seç</Button>
+                                  <Button className={"pick-flight-button " + (promotion && item.brandCode !== "ecoFly" ? "disabled" : "")} disabled={promotion && item.brandCode !== "ecoFly"} onClick={() => onFlightSelectClick(item)}>Uçuşu Seç</Button>
                                 </Card.Body>
                               </Card>
                             ))}
@@ -202,7 +202,7 @@ export function FlightList() {
                                       </div>
                                     ))}
                                   </div>
-                                  <Button variant="danger" disabled={promotion && item.brandCode !== "ecoFly"} onClick={() => onFlightSelectClick(item)}>Uçuşu Seç</Button>
+                                  <Button className={"pick-flight-button " + (promotion && item.brandCode !== "ecoFly" ? "disabled" : "")} disabled={promotion && item.brandCode !== "ecoFly"} onClick={() => onFlightSelectClick(item)}>Uçuşu Seç</Button>
                                 </Card.Body>
                               </Card>
                             ))}

@@ -69,7 +69,7 @@ export function FlightSearch() {
 
   return (
     <Layout>
-      <div id="flightSearch">
+      <div id="flightSearch" data-testid="flightSearchScreen">
         <div className="content">
           <h3 className="color-ui-white text-center">Merhaba <br/> Nereyi keşfetmek istersiniz?</h3>
           <div className="search-bar p-5">

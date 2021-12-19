@@ -52,9 +52,13 @@
     }
   }
 
-  .flight-select-button {
+  .pick-flight-button {
     background-color: v.$ui-red;
     width: 100%;
+  }
+
+  .pick-flight-button.disabled {
+    opacity: 0.6;
   }
 
   .accordion-collapse {
