@@ -21,6 +21,7 @@
     width: 100%;
     background-color: v.$ui-white;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,.05);
+    margin-bottom: 40px;
   }
 
   .flight-list-header {
@@ -29,7 +30,38 @@
     height: 50px;
   }
 
-  .flight-list-items {
+  div[class*='accordion-child'] {
+    width: 100%;
+    transition: all 0.20s;
+    opacity: 0;
+  }
 
+  .show {
+    div[class*='accordion-child'] {
+      width: calc(900px - 1rem);
+      transition: all 0.20s;
+      opacity: 1;
+    }
+
+    .accordion-child-last {
+      transform: translateX(-75%);
+    }
+
+    .accordion-child-middle {
+      transform: translateX(-50%);
+    }
+  }
+
+  .flight-select-button {
+    background-color: v.$ui-red;
+    width: 100%;
+  }
+
+  .accordion-collapse {
+    max-height: 200px;
+  }
+
+  .accordion-collapse.show {
+    max-height: unset;
   }
 }

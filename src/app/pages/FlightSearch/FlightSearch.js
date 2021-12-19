@@ -42,6 +42,7 @@ export function FlightSearch() {
 
   const onSearchClick = () => {
     if (!formData.destination || !formData.origin) {
+      setShowToaster(true)
       return
     }
     let proceed = false;
